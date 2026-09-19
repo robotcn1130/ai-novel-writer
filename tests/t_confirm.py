@@ -54,24 +54,29 @@ class FakeRouter:
 
 
 def main():
-    if not os.path.isfile(REAL_DB):
-        print("!! 找不到 %s，跳过" % REAL_DB)
-        return 0
-
     tmp = tempfile.mkdtemp(prefix="t_confirm_")
     copy = os.path.join(tmp, "novel.db")
-    shutil.copy2(REAL_DB, copy)
+    if os.path.isfile(REAL_DB):
+        shutil.copy2(REAL_DB, copy)
+    else:
+        # 干净 clone 里 sql/novel.db 还没生成：现建一个空库当底子。
+        # 早先这里直接 return 0 跳过，连 `=== OK=` 都不打 ——
+        # 总入口只看到「通过」，其实一条断言没跑。
+        print("  （没找到真实库，用临时空库）")
+        DBmod.ensure_db(copy)
 
     db = DBmod.open_db(copy)
     ORIG = prose.extract_and_apply_state
     try:
-        # 挑一个真有章节的小说当靶子
+        # 挑一个真有章节的小说当靶子；**一本都没有就现造一个**。
+        # 干净库上走 `return 0` 会变成「零断言的通过」，比失败更危险。
         rows = db.query("SELECT novel_id, chapter_number FROM chapters "
                         "ORDER BY novel_id, chapter_number LIMIT 1")
-        if not rows:
-            print("!! 副本库里没有章节，跳过")
-            return 0
-        nid = int(rows[0]["novel_id"])
+        if rows:
+            nid = int(rows[0]["novel_id"])
+        else:
+            nid = db.create_novel("__发布确认回归_临时世界__")["id"]
+            print("  （副本库里没有章节，已新建临时世界 %s）" % nid)
         probe = 99001                       # 专门造的桩章号，不碰真数据
 
         def gen(router):

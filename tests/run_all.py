@@ -19,6 +19,7 @@
 约定（跟项目里其它测试一致）：
   · 一律指向**副本库/临时目录**，不碰 sql/novel.db，不进项目 .workbuddy/skills
   · 自己起独立端口的 HTTP 服务，跑完关掉释放端口
+  · 首次运行会自动建库（sql/novel.db 不在版本库里），干净 clone 可直接用
 """
 import os
 import subprocess
@@ -48,9 +49,31 @@ SUITES = [
 ]
 
 
+def _ensure_db():
+    """干净 clone 里 `sql/novel.db` 还不存在（它在 .gitignore 里，
+    由 `启动创作台_v6.bat` / `migrate.py` 首次生成）。
+
+    不先建库就直接跑用例的话，每一套都会以「数据库不存在」报红 ——
+    那是**假红**，会把人引去查一个不存在的 bug。所以这里先补上。
+    """
+    src = os.path.join(ROOT, "src_v6")
+    if src not in sys.path:
+        sys.path.insert(0, src)
+    try:
+        from core import database as DBmod
+        DBmod.ensure_db()
+        print("数据库：%s" % DBmod.DEFAULT_DB)
+        return True
+    except Exception as e:                                   # noqa: BLE001
+        print("[警告] 建库失败：%s" % e)
+        print("        请手动跑 python src_v6/core/migrate.py")
+        return False
+
+
 def main():
     env = dict(os.environ)
     env["PYTHONIOENCODING"] = "utf-8"
+    _ensure_db()
     results = []
     for name, cmd in SUITES:
         if not os.path.isfile(cmd[1]):
