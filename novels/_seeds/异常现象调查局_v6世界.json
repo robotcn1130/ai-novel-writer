@@ -1,0 +1,77 @@
+{
+  "title": "异常现象调查局",
+  "genre": "都市悬疑 / 轻科幻",
+  "tone": "冷峻、克制、日常的荒诞",
+  "style": "短句为主，对白留白，少用比喻",
+  "premise": "每七年，这座城市会出现一次无法用现有科学解释的异常现象。异常现象调查局是一个不被公开承认的机构，负责封锁现场、掩盖真相、处理善后。局里有一份封存了四十年的档案，编号 07。",
+  "initial_tension": "距离下一次异常出现只剩 47 天，而上一任首席调查员在三个月前失踪，他留下的最后一句话是「别开 07 号」。",
+  "decision_mode": "director",
+  "completion_mode": "ai",
+  "target_words_per_chapter": 3000,
+  "world_state": [
+    {"key": "异常实体.剩余数量", "value": 0, "value_type": "int", "category": "threat", "note": "平静期，尚未出现"},
+    {"key": "倒计时.距下次异常", "value": 47, "value_type": "int", "category": "tension", "note": "单位：天"},
+    {"key": "调查局.信任度", "value": 50, "value_type": "int", "category": "relation", "note": "林默对调查局的信任"},
+    {"key": "07号档案.封存状态", "value": "完整", "value_type": "text", "category": "other", "note": "官方记录状态"}
+  ],
+  "entities": [
+    {"entity_type": "organization", "name": "异常现象调查局", "description": "不被公开承认的官方机构，编制 47 人，负责封锁异常现场并处理善后。", "power_level": 5, "visibility": "public"},
+    {"entity_type": "phenomenon", "name": "异常实体", "description": "每七年出现一次的存在，形态不固定，无法用现有仪器稳定观测。", "power_level": 5, "visibility": "revealed"},
+    {"entity_type": "item", "name": "07 号档案", "description": "封存四十年的档案，记载第一代异常实体的完整观测记录。封条由历任局长亲自管理。", "power_level": 3, "visibility": "hidden"},
+    {"entity_type": "location", "name": "调查局本部", "description": "位于旧城区的一栋六层建筑，对外挂牌是「市政档案管理处」。地下二层是封锁库。", "power_level": 3, "visibility": "public"}
+  ],
+  "characters": [
+    {
+      "name": "林默",
+      "rank": "A",
+      "role_tag": "调查局外勤调查员",
+      "personality": "沉默寡言，习惯先取证再下结论。对权威有天然的不信任，但从不表现出来。做事有耐心，能在同一个现场待上一整天。",
+      "background": "父亲是上一任首席调查员，三个月前失踪。局里给的结论是「擅自离岗」。",
+      "speech_style": "话少，回答问题常常只给结论不给过程。反问多于陈述。",
+      "decision_tendency": "倾向于选择信息量最大的那条路，即使代价更高",
+      "control_mode": "user",
+      "location": "调查局本部",
+      "goals": [
+        {"content": "查明父亲失踪的真相", "goal_type": "long", "motivation": "那是他唯一的亲人，也是他进入调查局的唯一理由", "priority": 5},
+        {"content": "在月底前拿到 07 号档案的调阅权", "goal_type": "short", "obstacle": "调阅需要局长亲笔签字，而局长已经两周没有露面", "priority": 4}
+      ]
+    },
+    {
+      "name": "老周",
+      "rank": "B",
+      "role_tag": "调查局资深调查员",
+      "personality": "圆滑，爱开玩笑，习惯用玩笑回避正面回答。看起来什么都不在乎，实际上记得局里每个人的生日。",
+      "background": "和林默的父亲共事十七年，是当年 07 号档案事件的在场者之一。",
+      "speech_style": "话密，喜欢用反问和打岔。真话假话混着说。",
+      "decision_tendency": "倾向于保护身边的人，哪怕要违规",
+      "control_mode": "ai",
+      "location": "调查局本部",
+      "goals": [
+        {"content": "不让林默重蹈他父亲的覆辙", "goal_type": "long", "motivation": "他对当年的事有说不清的愧疚", "priority": 5}
+      ]
+    },
+    {
+      "name": "齐雅",
+      "rank": "B",
+      "role_tag": "档案室管理员",
+      "personality": "一丝不苟，遵守规程到近乎刻板。不擅长说谎，一旦要说谎会先沉默三秒。",
+      "background": "三年前入职，负责档案数字化。是局里唯一一个读过 07 号档案目录的人。",
+      "speech_style": "用词准确，喜欢引用规程条款。",
+      "decision_tendency": "倾向于按规章办事，但底线是「不能改动原始记录」",
+      "control_mode": "ai",
+      "location": "调查局本部",
+      "goals": [
+        {"content": "按期完成全部档案的数字化", "goal_type": "short", "priority": 2}
+      ]
+    }
+  ],
+  "world_goals": [
+    {
+      "title": "下一次异常被查明并处置",
+      "goal_type": "world",
+      "description": "当异常实体再次出现时，必须弄清它是什么，并给出处置方案。",
+      "condition_expr": "world.异常实体.剩余数量 == 0 && world.07号档案.封存状态 == 已解封",
+      "is_primary": 1
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+# AI 小说创作系统 v6 —— 依赖说明
+#
+# 本版为**零第三方依赖**设计，只使用 Python 标准库：
+#   sqlite3 / json / http.server / urllib / argparse / re / threading
+#
+# 所以**不需要 pip install 任何包**，Python 3.10+ 即可运行。
+#
+# 启动：  双击 启动创作台_v6.bat
+#         或 python src_v6/webui/server.py --port 8787 --open
+# 建库：  python src_v6/core/migrate.py        （首次启动会自动执行）
+# 自测：  python tests/run_all.py
+#
+# 前端是原生 JS，无构建步骤。Node 仅用于可选的语法检查：
+#   node --check src_v6/webui/static/app.js

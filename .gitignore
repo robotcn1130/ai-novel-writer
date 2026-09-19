@@ -1,0 +1,63 @@
+# ============================================================
+#  AI 小说创作系统 v6 —— 版本库只放**能跑的程序**
+#  运行时数据、用户创作产物、文档论文一律不进库。
+# ============================================================
+
+# ---- Python 常规 ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ---- 编辑器 ----
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ---- 运行时数据库（首次启动由 src_v6/core/migrate.py 自动建库）----
+sql/*.db
+sql/*.db-wal
+sql/*.db-shm
+sql/*.db-journal
+sql/*.dropped_*
+
+# ---- 迁移/手工备份 ----
+backup/
+
+# ---- 用户创作产物（世界种子模板例外，见下）----
+novels/*
+!novels/_seeds
+!novels/_seeds/**
+output/
+
+# ---- 文档 / 论文 / 报告 ----
+docs/
+提示词/
+审计报告_*.md
+
+# ---- 旧版归档（v3 / v4，不维护）----
+legacy/
+src/
+# v4 时代的管理台启动器，指向没随库发布的 src/，留着等于一个坏快捷方式
+启动数据库界面.bat
+
+# ---- 临时与调试脚本 ----
+_inspect_db*.py
+_inspect_db*.txt
+_simulate.py
+_simulate.txt
+temp/
+*.log
+*.tmp
+
+# ---- WorkBuddy 工作区（含浏览器 profile，体积极大）----
+.workbuddy/
